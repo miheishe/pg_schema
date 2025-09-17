@@ -1,4 +1,4 @@
-# pg\_ascii\_schema — ASCII/JSON-обзор структуры PostgreSQL
+# pg\_schema — ASCII/JSON-обзор структуры PostgreSQL
 
 Минималистичный CLI-скрипт на Python, который подключается к БД по DSN `postgresql://…` и **потоково** печатает дерево структуры:
 
@@ -12,9 +12,9 @@
     * *(опц.)* **triggers**
   * *(опц.)* **functions**: `name(args) -> return_type`
 
-Вывод возможен в формате **ASCII** (дерево) или **JSON** (структура). Скрипт рассчитан на **очень большие БД (1 ТБ+)** — использует **server-side cursors** и не держит всё в ОЗУ.
+Вывод возможен в формате **ASCII** (дерево) или **JSON** (структура). Скрипт может быть выполнен на **очень больших БД (1 ТБ+)** — использует **server-side cursors** и не держит всё в ОЗУ.
 
----
+
 
 ## Установка
 
@@ -24,31 +24,22 @@
 pip install "psycopg[binary]"
 ```
 
-Сохраните файл скрипта как `pg_schema.py` и сделайте исполняемым:
-
-```bash
-chmod +x pg_schema.py
-```
-
----
 
 ## Быстрый старт
 
 ASCII в stdout:
 
 ```bash
-./pg_schema.py --dsn postgresql://user:pass@host:5432/db --schema public
+python ./pg_schema.py --dsn postgresql://user:pass@host:5432/db --schema public
 ```
 
 JSON в файл:
 
 ```bash
-./pg_schema.py --dsn postgresql://user:pass@host:5432/db --schema public \
+python ./pg_schema.py --dsn postgresql://user:pass@host:5432/db --schema public \
   --include-indexes --include-fkeys --include-triggers \
   --format json --pretty --output schema.json
 ```
-
----
 
 ## Формат ASCII (пример)
 
@@ -72,8 +63,6 @@ public
 └─ functions
    └─ set_timestamp() -> trigger
 ```
-
----
 
 ## Формат JSON (пример)
 
@@ -113,28 +102,26 @@ public
 }
 ```
 
----
-
 ## Параметры CLI
 
-| Параметр                 |         Тип | Описание                                                                                                     |
+|Параметр|Тип|Описание|
 | ------------------------ | ----------: | ------------------------------------------------------------------------------------------------------------ |
-| `--dsn`                  | str (обяз.) | Строка подключения `postgresql://user:pass@host:port/dbname`. Можно использовать `DATABASE_URL`.             |
-| `--schema`               |         str | Имя схемы **или** паттерн (если указан `--schema-regex`). Если не задано — обход всех пользовательских схем. |
-| `--schema-regex`         |        флаг | Интерпретировать `--schema` как регулярное выражение (Python regex).                                         |
-| `--include-views`        |        флаг | Добавить `VIEW` в обход.                                                                                     |
-| `--include-matviews`     |        флаг | Добавить `MATERIALIZED VIEW`.                                                                                |
-| `--include-foreign`      |        флаг | Добавить `FOREIGN TABLE`.                                                                                    |
-| `--include-funcs`        |        флаг | Печатать функции/процедуры схем.                                                                             |
-| `--include-all-schemas`  |        флаг | Включить системные схемы (`pg_*`, `information_schema`).                                                     |
-| `--include-indexes`      |        флаг | Печатать индексы таблиц.                                                                                     |
-| `--include-fkeys`        |        флаг | Печатать внешние ключи: `outgoing` и `incoming`.                                                             |
-| `--include-triggers`     |        флаг | Печатать триггеры.                                                                                           |
-| `--statement-timeout-ms` |         int | Установить `SET LOCAL statement_timeout` (мс). `0` — не задавать.                                            |
-| `--application-name`     |         str | `application_name` соединения.                                                                               |
-| `--output`               |         str | Путь к файлу для сохранения результата (по умолчанию stdout).                                                |
-| `--format`               |  ascii/json | Формат вывода (`ascii` — дерево, `json` — структура).                                                        |
-| `--pretty`               |        флаг | Красивый JSON с отступами.                                                                                   |
+|`--dsn`|str (обяз.)|Строка подключения `postgresql://user:pass@host:port/dbname`. Можно использовать `DATABASE_URL`.|
+|`--schema`|str|Имя схемы **или** паттерн (если указан `--schema-regex`). Если не задано — обход всех пользовательских схем.|
+|`--schema-regex`|флаг| Интерпретировать `--schema` как регулярное выражение (Python regex).                                         |
+|`--include-views`|флаг| Добавить `VIEW` в обход.     |
+|`--include-matviews`|флаг| Добавить `MATERIALIZED VIEW`.|
+|`--include-foreign`|флаг| Добавить `FOREIGN TABLE`.|
+|`--include-funcs`|флаг|Печатать функции/процедуры схем.|
+|`--include-all-schemas`|флаг|Включить системные схемы (`pg_*`, `information_schema`).|
+|`--include-indexes`|флаг|Печатать индексы таблиц.|
+|`--include-fkeys`|флаг| Печатать внешние ключи: `outgoing` и `incoming`.|
+|`--include-triggers`|флаг| Печатать триггеры.|
+|`--statement-timeout-ms`|int| Установить `SET LOCAL statement_timeout` (мс). `0` — не задавать.|
+|`--application-name`|str| `application_name` соединения.|
+|`--output`|str| Путь к файлу для сохранения результата (по умолчанию stdout).|
+|`--format`|ascii/json|Формат вывода (`ascii` — дерево, `json` — структура).|
+|`--pretty`|флаг| Красивый JSON с отступами.|
 
 ---
 
@@ -143,19 +130,19 @@ public
 ### ASCII в stdout
 
 ```bash
-./pg_schema.py --dsn "$DATABASE_URL" --schema public
+python ./pg_schema.py --dsn "$DATABASE_URL" --schema public
 ```
 
 ### ASCII в файл
 
 ```bash
-./pg_schema.py --dsn "$DATABASE_URL" --schema public --output schema.txt
+python ./pg_schema.py --dsn "$DATABASE_URL" --schema public --output schema.txt
 ```
 
 ### JSON (компактный) в файл
 
 ```bash
-./pg_schema.py --dsn "$DATABASE_URL" --schema public \
+python ./pg_schema.py --dsn "$DATABASE_URL" --schema public \
   --include-indexes --include-fkeys --include-triggers \
   --format json --output schema.json
 ```
@@ -163,7 +150,7 @@ public
 ### JSON (красивый) в stdout
 
 ```bash
-./pg_schema.py --dsn "$DATABASE_URL" --format json --pretty
+python ./pg_schema.py --dsn "$DATABASE_URL" --format json --pretty
 ```
 
 ---
