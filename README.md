@@ -1,3 +1,8 @@
+![AI Code](https://img.shields.io/badge/AI%20Code-⚡-blue?style=flat)
+
+
+
+
 # pg\_schema — ASCII/JSON-обзор структуры PostgreSQL
 
 Минималистичный CLI-скрипт на Python, который подключается к БД по DSN `postgresql://…` и **потоково** печатает дерево структуры:
